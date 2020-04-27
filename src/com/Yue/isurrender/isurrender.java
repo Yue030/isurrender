@@ -6,6 +6,13 @@ import java.awt.Rectangle;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 import javax.swing.JButton;
@@ -17,15 +24,6 @@ import javax.swing.JTextArea;
 
 public class isurrender extends JFrame{
 	private static final long serialVersionUID = 1L;
-	
-	private static final String[] txt = {
-			"可以", "好的", "由你自己決定", "不行", "不可以",
-			"問問離你最近的人", "打電話問你朋友", "休息\n是為了走更長遠的路", "拿出你的十元硬幣\n一筊定江山!", "閉上雙眼按到你想停為止！",
-			"忍一時風平浪靜\n退一步海闊天空", "邊問邊跪拜\n離你最近的人", "該休息了\n但如果你已經休息充足\n就可以繼續前行了", "看看你手機的電量\n雙數則是\n單數則否",
-			"相信張開雙眼\n第一眼所看到的東西", "看看自己的想法~\n追隨夢想~~", "打開youtube的第一部影片\n他將會給你答案", "先做個10下伏地挺身~\n再問問我吧!!", "去做一些有意義的事吧！",
-			"欲窮千里目\n更上一層樓\n(能,但有更好的)", "先訂閱胡子再提問一次吧！", "問問你最好的朋友\n你會得到答案", "接下來的三小時都由你做主", "小心\n做完之後\n可能會有神秘的事發生",
-			"你覺得呢(ﾉ´∀｀*)...\n不行( ･ิϖ･ิ)", "走出房門\n見到的第一個人\n會給你相反的答案 ", "你的心裡已經有答案了\n又何必問我呢", "just do it！！", "靜思十分鐘後再來問我"
-			};
 
 	private JPanel panel = null;
 	
@@ -39,7 +37,15 @@ public class isurrender extends JFrame{
 	
 	private JLabel codeby = null;
 	
+	private String path = "./answer.txt";
+
+	private String[] nums = writeToDat(path);
+
+	private static List<String> list = new ArrayList<String>();
+
+	
 	public isurrender() {
+		createFile();
 		init();
 	}
 	
@@ -54,6 +60,48 @@ public class isurrender extends JFrame{
 		setVisible(true);
 	}
 	
+	private void createFile() {
+		File file = new File(path);
+		if(!file.exists()) {
+			file.getParentFile().mkdir();
+			try {
+				file.createNewFile();
+				FileWriter fw = new FileWriter(path);
+				fw.write("請記得輸入答案，換行會自動偵測");
+				fw.flush();
+				fw.close();
+			} catch(IOException e) {
+				e.getStackTrace();
+			}
+		}
+	}
+	
+	private String[] writeToDat(String path) {
+		File file = new File(path);
+		String[] nums = null;
+		
+		try {
+			BufferedReader br = new BufferedReader(new FileReader(file));
+			String line = null;
+			
+			while((line = br.readLine()) != null) {
+				list.add(line);
+			}
+			br.close();
+			
+		} catch(IOException e) {
+			e.getStackTrace();
+		}
+		
+		nums = new String[(list.size())];
+		
+		for(int i = 0; i < list.size(); i++) {
+			String s = list.get(i);
+			nums[i] = s;
+		}
+		return nums;
+	}
+	
 	private int randomNum(int length) {
 		Random random = new Random();
 		int num = random.nextInt(length);
@@ -61,7 +109,7 @@ public class isurrender extends JFrame{
 	}
 	
 	private void doTxt() {
-		String ans = txt[randomNum(txt.length)].toString();
+		String ans = nums[randomNum(list.size())].toString() + "</html>" ;
 		getArea().setText(ans);
 	}
 	
