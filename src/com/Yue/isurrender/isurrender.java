@@ -54,13 +54,13 @@ public class isurrender extends JFrame{
 		setVisible(true);
 	}
 	
-	public int randomNum(int length) {
+	private int randomNum(int length) {
 		Random random = new Random();
 		int num = random.nextInt(length);
 		return num;
 	}
 	
-	public void doTxt() {
+	private void doTxt() {
 		String ans = txt[randomNum(txt.length)].toString();
 		getArea().setText(ans);
 	}
