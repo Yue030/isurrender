@@ -55,6 +55,7 @@ public class isurrender extends JFrame{
 		setLocation(screenSize.width / 2 - getWidth() / 2,
 				screenSize.height / 2 - getHeight() / 2);
 		setResizable(false);
+		setDefaultCloseOperation(EXIT_ON_CLOSE);
 		setContentPane(getPanel());
 		setTitle("人生解答系統");
 		setVisible(true);
@@ -64,14 +65,21 @@ public class isurrender extends JFrame{
 		File file = new File(path);
 		if(!file.exists()) {
 			file.getParentFile().mkdir();
+			FileWriter fw = null;
 			try {
 				file.createNewFile();
-				FileWriter fw = new FileWriter(path);
+				fw = new FileWriter(path);
 				fw.write("請記得輸入答案，換行會自動偵測");
-				fw.flush();
-				fw.close();
 			} catch(IOException e) {
 				e.getStackTrace();
+			} finally {
+				try {
+	                if (fw != null) {
+	                	fw.flush();
+	                    fw.close();
+	                }
+	            } catch (IOException e) {}
+				
 			}
 		}
 	}
@@ -79,18 +87,24 @@ public class isurrender extends JFrame{
 	private String[] writeToDat(String path) {
 		File file = new File(path);
 		String[] nums = null;
+		BufferedReader br = null;
 		
 		try {
-			BufferedReader br = new BufferedReader(new FileReader(file));
+			br =new BufferedReader(new FileReader(file));
 			String line = null;
 			
 			while((line = br.readLine()) != null) {
 				list.add(line);
 			}
-			br.close();
 			
 		} catch(IOException e) {
 			e.getStackTrace();
+		} finally {
+			try {
+				if(br != null) {
+					br.close();
+				}		
+			} catch (IOException e) {}
 		}
 		
 		nums = new String[(list.size())];
@@ -109,7 +123,7 @@ public class isurrender extends JFrame{
 	}
 	
 	private void doTxt() {
-		String ans = nums[randomNum(list.size())].toString() + "</html>" ;
+		String ans = nums[randomNum(list.size())].toString();
 		getArea().setText(ans);
 	}
 	
