@@ -22,161 +22,184 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 
-public class isurrender extends JFrame{
+public class isurrender extends JFrame {
 	private static final long serialVersionUID = 1L;
 
 	private JPanel panel = null;
-	
+
 	private JButton start = null;
-	
+
+	private JButton reload = null;
+
 	private JScrollPane jscrollpane = null;
-	
+
 	private JTextArea area = null;
-	
+
 	private JLabel introduction = null;
-	
+
 	private JLabel codeby = null;
-	
+
 	private String path = "./answer.txt";
 
 	private String[] nums = writeToDat(path);
 
 	private static List<String> list = new ArrayList<String>();
 
-	
 	public isurrender() {
 		createFile();
 		init();
 	}
-	
+
 	private void init() {
-		setSize(400,400);
+		setSize(400, 400);
 		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-		setLocation(screenSize.width / 2 - getWidth() / 2,
-				screenSize.height / 2 - getHeight() / 2);
+		setLocation(screenSize.width / 2 - getWidth() / 2, screenSize.height / 2 - getHeight() / 2);
 		setResizable(false);
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 		setContentPane(getPanel());
 		setTitle("人生解答系統");
 		setVisible(true);
 	}
-	
+
 	private void createFile() {
 		File file = new File(path);
-		if(!file.exists()) {
+		if (!file.exists()) {
 			file.getParentFile().mkdir();
 			FileWriter fw = null;
 			try {
 				file.createNewFile();
 				fw = new FileWriter(path);
 				fw.write("請記得輸入答案，換行會自動偵測");
-			} catch(IOException e) {
+			} catch (IOException e) {
 				e.getStackTrace();
 			} finally {
 				try {
-	                if (fw != null) {
-	                	fw.flush();
-	                    fw.close();
-	                }
-	            } catch (IOException e) {}
-				
+					if (fw != null) {
+						fw.flush();
+						fw.close();
+					}
+				} catch (IOException e) {
+				}
 			}
 		}
 	}
-	
+
 	private String[] writeToDat(String path) {
 		File file = new File(path);
 		String[] nums = null;
 		BufferedReader br = null;
-		
+
 		try {
-			br =new BufferedReader(new FileReader(file));
+			br = new BufferedReader(new FileReader(file));
 			String line = null;
-			
-			while((line = br.readLine()) != null) {
+
+			while ((line = br.readLine()) != null) {
 				list.add(line);
 			}
-			
-		} catch(IOException e) {
+
+		} catch (IOException e) {
 			e.getStackTrace();
 		} finally {
 			try {
-				if(br != null) {
+				if (br != null) {
 					br.close();
-				}		
-			} catch (IOException e) {}
+				}
+			} catch (IOException e) {
+			}
 		}
-		
+
 		nums = new String[(list.size())];
-		
-		for(int i = 0; i < list.size(); i++) {
+
+		for (int i = 0; i < list.size(); i++) {
 			String s = list.get(i);
 			nums[i] = s;
 		}
 		return nums;
 	}
-	
+
 	private int randomNum(int length) {
 		Random random = new Random();
 		int num = random.nextInt(length);
 		return num;
 	}
-	
+
 	private void doTxt() {
 		String ans = nums[randomNum(list.size())].toString();
 		getArea().setText(ans);
 	}
-	
+
 	private JPanel getPanel() {
-		if(this.panel == null) {
+		if (this.panel == null) {
 			this.panel = new JPanel();
-			this.panel.setLayout((LayoutManager)null);
+			this.panel.setLayout((LayoutManager) null);
 			this.panel.add(getJSrollPane(), null);
 			this.panel.add(getStart(), null);
 			this.panel.add(getLabel(), null);
 			this.panel.add(codeBy(), null);
+			this.panel.add(reload(), null);
 		}
 		return this.panel;
 	}
-	
+
 	private JScrollPane getJSrollPane() {
-		if(this.jscrollpane == null) {
+		if (this.jscrollpane == null) {
 			this.jscrollpane = new JScrollPane();
 			this.jscrollpane.setBounds(new Rectangle(10, 30, 365, 200));
 			this.jscrollpane.setViewportView(getArea());
 		}
 		return this.jscrollpane;
 	}
-	
+
 	private JTextArea getArea() {
-		if(this.area == null) {
+		if (this.area == null) {
 			this.area = new JTextArea();
 			this.area.setFont(new java.awt.Font("Dialog", 0, 30));
 			this.area.setEditable(false);
 		}
 		return this.area;
 	}
-	
+
 	private JButton getStart() {
-		if(this.start == null) {
+		if (this.start == null) {
 			this.start = new JButton();
 			this.start.setBounds(new Rectangle(10, 250, 100, 50));
-			this.start.setFont(new java.awt.Font("Dialog", 0, 30));
-			this.start.setActionCommand("按鈕");
-			this.start.setText("按鈕");
+			this.start.setFont(new java.awt.Font("Dialog", 0, 21));
+			this.start.setActionCommand("start");
+			this.start.setText("請開示");
 			this.start.addActionListener(new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
-					isurrender frame = (isurrender)((JButton)e.getSource()).getTopLevelAncestor();
+					isurrender frame = (isurrender) ((JButton) e.getSource()).getTopLevelAncestor();
+					start.setText("繼續問");
 					frame.doTxt();
 				}
 			});
 		}
 		return this.start;
 	}
-	
+
+	private JButton reload() {
+		if (this.reload == null) {
+			this.reload = new JButton();
+			this.reload.setBounds(new Rectangle(10, 300, 100, 50));
+			this.reload.setFont(new java.awt.Font("Dialog", 0, 21));
+			this.reload.setActionCommand("reload");
+			this.reload.setText("重置");
+			this.reload.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					isurrender frame = (isurrender) ((JButton) e.getSource()).getTopLevelAncestor();
+					frame.getStart().setText("請開示");
+					frame.getArea().setText("");
+				}
+			});
+		}
+
+		return this.reload;
+	}
+
 	private JLabel getLabel() {
-		if(this.introduction == null) {
+		if (this.introduction == null) {
 			this.introduction = new JLabel();
 			this.introduction.setBounds(new Rectangle(150, 250, 200, 50));
 			this.introduction.setFont(new java.awt.Font("Dialog", 0, 15));
@@ -184,8 +207,9 @@ public class isurrender extends JFrame{
 		}
 		return this.introduction;
 	}
+
 	private JLabel codeBy() {
-		if(this.codeby == null) {
+		if (this.codeby == null) {
 			this.codeby = new JLabel();
 			this.codeby.setBounds(new Rectangle(290, 315, 100, 75));
 			this.codeby.setFont(new java.awt.Font("Dialog", 0, 12));
@@ -193,7 +217,7 @@ public class isurrender extends JFrame{
 		}
 		return this.codeby;
 	}
-	
+
 	public static void main(String[] args) {
 		new isurrender();
 	}
